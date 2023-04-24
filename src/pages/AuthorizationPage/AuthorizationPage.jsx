@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import Authorization from "../../components/Authorization";
 
 import s from "./AuthorizationPage.module.scss";
+import Registration from "../../components/Registration";
 
 function AuthorizationPage({ variant = "authorization" }) {
   return (
@@ -18,6 +19,7 @@ function AuthorizationPage({ variant = "authorization" }) {
           </Link>
         </div>
         {variant === "authorization" && <Authorization />}
+        {variant === "registration" && <Registration />}
       </div>
     </div>
   );

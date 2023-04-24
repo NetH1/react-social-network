@@ -27,13 +27,33 @@ export const authUser = createAsyncThunk(
   }
 );
 
+export const RegistrateUser = createAsyncThunk(
+  'user/RegistrateUser',
+  async(formData, {rejectWithValue}) => {
+    try {
+      const res = await fetch(
+        `${endpoint}/users`,
+        {
+          method:"POST",
+          headers:{
+            "Content-Type": "application/json",
+          },
+          body:JSON.stringify(formData)
+        }
+      )
+      if(!res.ok){
+        throw new Error('server bad')
+    }
+    } catch (error) {
+      return rejectWithValue(error)
+    }
+  }
+);
+
 const UserSlice = createSlice({
   name: "user",
   initialState: {
-    user: {
-      login: "anime",
-      password: "qwerty",
-    },
+    user:null,
     isLoading: false,
     error: null,
   },
@@ -60,6 +80,19 @@ const UserSlice = createSlice({
       state.isLoading = false;
       state.error = null;
       state.user = action.payload;
+    },
+
+    [RegistrateUser.pending]: (state) =>{
+      state.isLoading = true;
+    },
+    [RegistrateUser.fulfilled]: (state, action) => {
+      state.isLoading = false;
+      state.user = action.payload;
+      state.error = null
+    },
+    [RegistrateUser.rejected]: (state, action) => {
+      state.isLoading = false;
+      state.error = action.payload
     }
   },
 });
