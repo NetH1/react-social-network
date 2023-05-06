@@ -1,22 +1,22 @@
 import React, { useState } from 'react';
-import Input from '../Input';
-import Button from '../Button/Button';
+import Input from '../UI/Input';
+import Button from '../UI/Button';
 import s from './registration.module.scss'
 import { useDispatch,useSelector } from 'react-redux';
-import { RegistrateUser } from '../../store/userSlice';
+import { RegistrateUser,authUser } from '../../store/userSlice';
 
 const Registration = () => {
     const dispatch = useDispatch()
     const { isLoading } = useSelector((store) => store.user);
     const [form, setForm] = useState({
-        email: '',
+        login: '',
         password: ''
     });
-    const { email, password } = form;
+    const { login, password } = form;
 
     const onSubmit = (e) => {
         e.preventDefault();
-        dispatch(RegistrateUser(form)).then(() => setForm({email:'', password: ''}))
+        dispatch(RegistrateUser(form)).then(() => setForm({login:'', password: ''}))
     }
     const onChange = (e) =>
         setForm({ ...form, [e.target.name]: e.target.value });

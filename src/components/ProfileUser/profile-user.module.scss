@@ -1,0 +1,8 @@
+@use "../../styles/mixins";
+
+.user_information{
+    @include mixins.defualtFlexContent($jus-con:space-between);
+}
+.information{
+    @include mixins.defualtFlexContent()
+}

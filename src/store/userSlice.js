@@ -1,6 +1,7 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 
 const endpoint = process.env.REACT_APP_ENDPOINT || "";
+const user = localStorage.getItem('user') !== null ? JSON.parse(localStorage.getItem('user')) : null
 
 export const authUser = createAsyncThunk(
   "user/authUser",
@@ -29,31 +30,56 @@ export const authUser = createAsyncThunk(
 
 export const RegistrateUser = createAsyncThunk(
   'user/RegistrateUser',
-  async(formData, {rejectWithValue}) => {
+  async (formData, { rejectWithValue, dispatch }) => {
     try {
       const res = await fetch(
         `${endpoint}/users`,
         {
-          method:"POST",
-          headers:{
+          method: "POST",
+          headers: {
             "Content-Type": "application/json",
           },
-          body:JSON.stringify(formData)
+          body: JSON.stringify(formData)
         }
       )
-      if(!res.ok){
+      if (!res.ok) {
         throw new Error('server bad')
-    }
+      }
+      dispatch(authUser(formData))
     } catch (error) {
       return rejectWithValue(error)
     }
   }
 );
 
+export const changeUser = createAsyncThunk(
+  'user/changeUser',
+  async ({formSettings, userId}, { rejectWithValue, dispatch }) => {
+    try {
+      const res = await fetch(
+        `${endpoint}/users/${userId}`,
+        {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify(formSettings)
+        }
+      )
+      if (!res.ok) {
+        throw new Error('server bad')
+      }
+      dispatch(authUser(formSettings))
+    } catch (error) {
+      return rejectWithValue(error)
+    }
+  }
+)
+
 const UserSlice = createSlice({
   name: "user",
   initialState: {
-    user:null,
+    user: user,
     isLoading: false,
     error: null,
   },
@@ -63,6 +89,7 @@ const UserSlice = createSlice({
     },
     logOut(state) {
       state.user = null;
+      localStorage.removeItem('user')
     },
     changeUser(state, action) {
       state.user.name = action.payload;
@@ -80,9 +107,12 @@ const UserSlice = createSlice({
       state.isLoading = false;
       state.error = null;
       state.user = action.payload;
+      localStorage.setItem('user', JSON.stringify(state.user))
     },
 
-    [RegistrateUser.pending]: (state) =>{
+
+
+    [RegistrateUser.pending]: (state) => {
       state.isLoading = true;
     },
     [RegistrateUser.fulfilled]: (state, action) => {
@@ -93,6 +123,21 @@ const UserSlice = createSlice({
     [RegistrateUser.rejected]: (state, action) => {
       state.isLoading = false;
       state.error = action.payload
+    },
+
+
+    [changeUser.pending]: (state) => {
+      state.isLoading = true
+    },
+    [changeUser.rejected]: (state, action) => {
+      state.isLoading = false;
+      state.error = action.payload
+    },
+    [changeUser.fulfilled]: (state, action) => {
+      state.isLoading = false;
+      state.user = action.payload;
+      localStorage.removeItem('user', JSON.stringify(state.user))
+      state.error = null
     }
   },
 });

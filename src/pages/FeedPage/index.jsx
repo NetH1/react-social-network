@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 
 import { getPosts } from "../../store/postsSlice";
-import Button from "../../components/Button/Button";
+import Button from "../../components/UI/Button";
 
 function FeedPage() {
   const dispatch = useDispatch();
@@ -12,7 +12,7 @@ function FeedPage() {
   const { posts } = useSelector((state) => state.posts);
 
   useEffect(() => {
-    dispatch(getPosts({ limit: 1, page }));
+    dispatch(getPosts({ limit: 8, page }));
   }, [page]);
 
   const onPrev = () => {
@@ -31,12 +31,12 @@ function FeedPage() {
         <Button onClick={onNext}>Next</Button>
       </div>
       <div>
-        {posts.map((post) => (
+        {posts?.length > 0 && posts.map((post) => (
           <div key={post.id}>
-            <Link />
-            <div>{post.text}</div>
+            <Link to={`post/${post.id}`}>
             {post.user && <div>{post.user.login}</div>}
             {post.image && <img src={post.image} alt="" />}
+            </Link>
           </div>
         ))}
       </div>

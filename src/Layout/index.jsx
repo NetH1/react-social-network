@@ -9,7 +9,7 @@ function MainLayout() {
   return (
     <div className={s.layout}>
       <Navigation />
-      <div>
+      <div className={s.main_layout}>
         <Outlet />
       </div>
     </div>

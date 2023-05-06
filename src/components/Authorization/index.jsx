@@ -2,11 +2,11 @@ import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useSnackbar } from "notistack";
 
-import Input from "../Input";
-import Button from "../Button/Button";
+import Input from "../UI/Input";
+import Button from "../UI/Button";
 import { authUser, dismissError } from "../../store/userSlice";
 
-import s from "./Authorization.module.scss";
+import s from "./Authorization.module.scss"; 
 
 function Authorization() {
   const dispatch = useDispatch();
@@ -16,7 +16,6 @@ function Authorization() {
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [users, setUsers] = useState({});
 
   const onEmailChange = (event) => {
     setEmail(event.target.value);
